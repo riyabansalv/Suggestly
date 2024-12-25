@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Recommendation System</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="background-icons">
+        <!-- Music notes distributed in a grid -->
+        <div class="music-note"></div>
+        <div class="music-note"></div>
+        <div class="music-note"></div>
+        <div class="music-note"></div>
+        <div class="music-note"></div>
+        <div class="music-note"></div>
+        <div class="music-note"></div>
+        <div class="music-note"></div>
+        <div class="music-note"></div>
+        <div class="music-note"></div>
+        <!-- Add more notes as needed -->
+    </div>
+
+    <div class="container">
+        <h1>Music Recommendation System</h1>
+        <input type="text" id="musicInput" placeholder="Enter a song title">
+        <button onclick="getRecommendations()">Get Recommendations</button>
+        <div id="recommendations"></div>
+    </div>
+    
+    <script>
+        async function getRecommendations() {
+            const musicTitle = document.getElementById("musicInput").value;
+
+            const response = await fetch("/recommend", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ music_title: musicTitle })
+            });
+
+            const data = await response.json();
+            const recommendationsDiv = document.getElementById("recommendations");
+
+            if (data.recommendations) {
+                recommendationsDiv.innerHTML = `<h2>Recommendations:</h2>
+                    <ul>${data.recommendations.map(song => `<li>${song}</li>`).join('')}</ul>`;
+            } else {
+                recommendationsDiv.innerHTML = "<p>No recommendations found.</p>";
+            }
+        }
+    </script>
+</body>
+</html>
+
