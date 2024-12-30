@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Recommender</title>
+    <link rel="stylesheet" href="/static/style_book.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Book Recommender</h1>
+        <input type="text" id="bookTitle" placeholder="Enter Book Title">
+        <button onclick="getRecommendations()">Get Recommendations</button>
+        
+        <div id="recommendations">
+            <h3>Recommendations:</h3>
+            <ul id="recommendationList"></ul>
+        </div>
+    </div>
+
+    <script>
+        async function getRecommendations() {
+            const bookTitle = document.getElementById('bookTitle').value;
+            const response = await fetch(`http://127.0.0.1:5000/recommend?title=${bookTitle}`);
+            const data = await response.json();
+
+            const recommendationList = document.getElementById('recommendationList');
+            recommendationList.innerHTML = '';
+            
+            if (data.length > 0) {
+                data.forEach(book => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = book;
+                    recommendationList.appendChild(listItem);
+                });
+            } else {
+                recommendationList.innerHTML = '<li>Book not found. Please try another.</li>';
+            }
+        }
+    </script>
+</body>
+</html>

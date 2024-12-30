@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recommendation System</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Recommendation System</h1>
+        <p>Select the type of recommendation you want:</p>
+        
+        <!-- Buttons to navigate to music or book recommendations -->
+        <button onclick="showMusicRecommendation()">Music Recommendation</button>
+        <button onclick="showBookRecommendation()">Book Recommendation</button>
+        
+        <!-- Music Recommendation Section -->
+        <div id="musicSection" style="display: none;">
+            <h2>Music Recommendation</h2>
+            <input type="text" id="musicInput" placeholder="Enter a song title">
+            <button onclick="getMusicRecommendations()">Get Recommendations</button>
+            <div id="musicRecommendations"></div>
+        </div>
+        
+        <!-- Book Recommendation Section -->
+        <div id="bookSection" style="display: none;">
+            <h2>Book Recommendation</h2>
+            <input type="text" id="bookTitle" placeholder="Enter Book Title">
+            <button onclick="getBookRecommendations()">Get Recommendations</button>
+            <div id="bookRecommendations">
+                <h3>Recommendations:</h3>
+                <ul id="bookRecommendationList"></ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Show the music recommendation section and hide others
+        function showMusicRecommendation() {
+            document.getElementById("musicSection").style.display = "block";
+            document.getElementById("bookSection").style.display = "none";
+        }
+
+        // Show the book recommendation section and hide others
+        function showBookRecommendation() {
+            document.getElementById("bookSection").style.display = "block";
+            document.getElementById("musicSection").style.display = "none";
+        }
+
+        // Fetch music recommendations
+        async function getMusicRecommendations() {
+            const musicTitle = document.getElementById("musicInput").value;
+            const response = await fetch("/recommend_music", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ music_title: musicTitle })
+            });
+
+            const data = await response.json();
+            const recommendationsDiv = document.getElementById("musicRecommendations");
+
+            if (data.recommendations) {
+                recommendationsDiv.innerHTML = `<h2>Recommendations:</h2>
+                    <ul>${data.recommendations.map(song => `<li>${song}</li>`).join('')}</ul>`;
+            } else {
+                recommendationsDiv.innerHTML = "<p>No recommendations found.</p>";
+            }
+        }
+
+        // Fetch book recommendations
+        async function getBookRecommendations() {
+            const bookTitle = document.getElementById('bookTitle').value;
+            const response = await fetch(`/recommend_book`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ book_title: bookTitle })
+            });
+
+            const data = await response.json();
+            const recommendationList = document.getElementById('bookRecommendationList');
+            recommendationList.innerHTML = '';
+
+            if (data.recommendations.length > 0) {
+                data.recommendations.forEach(book => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = book;
+                    recommendationList.appendChild(listItem);
+                });
+            } else {
+                recommendationList.innerHTML = '<li>Book not found. Please try another.</li>';
+            }
+        }
+    </script>
+</body>
+</html>
