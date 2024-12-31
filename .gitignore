@@ -1,0 +1,11 @@
+# Ignore all .pkl files
+*.pkl
+
+# Ignore dataset files and directories
+datasets/
+
+# Ignore Python bytecode files
+*.pyc
+
+# Ignore logs
+*.log
