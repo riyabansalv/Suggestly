@@ -14,6 +14,9 @@
         <!-- Buttons to navigate to music or book recommendations -->
         <button onclick="showMusicRecommendation()">Music Recommendation</button>
         <button onclick="showBookRecommendation()">Book Recommendation</button>
+        <button onclick="showMovieRecommendation()">Movie Recommendation</button>
+        <button onclick="showGameRecommendation()">Game Recommendation</button>
+        
         
         <!-- Music Recommendation Section -->
         <div id="musicSection" style="display: none;">
@@ -33,6 +36,24 @@
                 <div id="bookRecommendationList" class="recommendation-section"></div>
             </div>
         </div>
+
+        <!-- Movie Recommendation Section -->
+        <div id="movieSection" style="display: none;">
+            <h2>Movie Recommendation</h2>
+            <input type="text" id="movieInput" placeholder="Enter Movie Title">
+            <button onclick="getMovieRecommendations()">Get Recommendations</button>
+            <div id="movieRecommendations"></div>
+        </div>
+
+        <!-- Game Recommendation Section -->
+        <div id="gameSection" style="display: none;"> <!-- New section -->
+            <h2>Game Recommendation</h2>
+            <input type="text" id="gameInput" placeholder="Enter Game Title">
+            <button onclick="getGameRecommendations()">Get Recommendations</button>
+            <div id="gameRecommendations"></div>
+        </div>  
+
+
     </div>
 
     <script>
@@ -40,12 +61,32 @@
         function showMusicRecommendation() {
             document.getElementById("musicSection").style.display = "block";
             document.getElementById("bookSection").style.display = "none";
+            document.getElementById("movieSection").style.display = "none";
+            document.getElementById("gameSection").style.display = "none";
         }
 
         // Show the book recommendation section and hide others
         function showBookRecommendation() {
             document.getElementById("bookSection").style.display = "block";
             document.getElementById("musicSection").style.display = "none";
+            document.getElementById("movieSection").style.display = "none";
+            document.getElementById("gameSection").style.display = "none";
+        }
+
+        // Show the movie recommendation section and hide others
+        function showMovieRecommendation() {
+            document.getElementById("movieSection").style.display = "block";
+            document.getElementById("musicSection").style.display = "none";
+            document.getElementById("bookSection").style.display = "none";
+            document.getElementById("gameSection").style.display = "none";
+        }
+
+        // Show the game recommendation section and hide others
+        function showGameRecommendation() { // New function
+            document.getElementById("gameSection").style.display = "block";
+            document.getElementById("musicSection").style.display = "none";
+            document.getElementById("bookSection").style.display = "none";
+            document.getElementById("movieSection").style.display = "none";
         }
 
         // Fetch music recommendations
@@ -166,6 +207,53 @@
                 recommendationList.innerHTML = '<p>Book not found. Please try another.</p>';
             }
         }
+
+        // Fetch movie recommendations
+        async function getMovieRecommendations() {
+            const movieTitle = document.getElementById("movieInput").value;
+            const response = await fetch("/recommend_movie", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ movie_title: movieTitle })
+            });
+
+            const data = await response.json();
+            const recommendationsDiv = document.getElementById("movieRecommendations");
+
+            if (data.recommendations) {
+                recommendationsDiv.innerHTML = `<h2>Recommendations:</h2>
+                    <ul>${data.recommendations.map(movie => `<li>${movie}</li>`).join('')}</ul>`;
+            } else {
+                recommendationsDiv.innerHTML = "<p>No recommendations found.</p>";
+            }
+        }
+
+        // Fetch game recommendations
+        async function getGameRecommendations() { // New function
+            const gameTitle = document.getElementById("gameInput").value;
+            const response = await fetch("/recommend_game", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ game_name: gameTitle })
+            });
+
+            const data = await response.json();
+            const recommendationsDiv = document.getElementById("gameRecommendations");
+
+            if (data.recommendations) {
+                recommendationsDiv.innerHTML = `<h2>Recommendations:</h2>
+                    <ul>${data.recommendations.map(game => `<li>${game}</li>`).join('')}</ul>`;
+            } else if (data.error) {
+                recommendationsDiv.innerHTML = `<p>${data.error}</p>`;
+            } else {
+                recommendationsDiv.innerHTML = "<p>No recommendations found.</p>";
+            }
+        }
+
 
     </script>
 </body>
