@@ -20,7 +20,7 @@
             <h2>Music Recommendation</h2>
             <input type="text" id="musicInput" placeholder="Enter a song title">
             <button onclick="getMusicRecommendations()">Get Recommendations</button>
-            <div id="musicRecommendations"></div>
+            <div id="musicRecommendations" class="recommendation-section"></div>
         </div>
         
         <!-- Book Recommendation Section -->
@@ -30,7 +30,7 @@
             <button onclick="getBookRecommendations()">Get Recommendations</button>
             <div id="bookRecommendations">
                 <h3>Recommendations:</h3>
-                <ul id="bookRecommendationList"></ul>
+                <div id="bookRecommendationList" class="recommendation-section"></div>
             </div>
         </div>
     </div>
@@ -62,11 +62,64 @@
             const data = await response.json();
             const recommendationsDiv = document.getElementById("musicRecommendations");
 
-            if (data.recommendations) {
-                recommendationsDiv.innerHTML = `<h2>Recommendations:</h2>
-                    <ul>${data.recommendations.map(song => `<li>${song}</li>`).join('')}</ul>`;
+            // Check if recommendations are present
+            if (data.recommendations && data.recommendations.length > 0) {
+                recommendationsDiv.innerHTML = `<h2>Recommendations:</h2>`;
+                recommendationsDiv.style.display = "flex";
+                recommendationsDiv.style.flexWrap = "wrap";
+
+                data.recommendations.forEach((song) => {
+                    const songTitle = song.title;  // Title of the song
+                    const posterUrl = song.poster_url || "https://via.placeholder.com/150"; // Fallback to placeholder if poster URL is missing
+
+                    // Create the song container
+                    const songContainer = document.createElement('div');
+                    songContainer.style.marginRight = "20px";
+                    songContainer.style.textAlign = "center";
+                    
+                    // Create the song title element
+                    const songTitleElement = document.createElement('h4');
+                    songTitleElement.textContent = songTitle;
+
+                    // Create the poster image element
+                    const songPoster = document.createElement('img');
+                    songPoster.src = posterUrl;
+                    songPoster.alt = songTitle;
+                    songPoster.style.width = "150px";  // Set width for poster
+                    songPoster.style.height = "auto";  // Maintain aspect ratio
+
+                    // Append title and poster to the song container
+                    songContainer.appendChild(songTitleElement);
+                    songContainer.appendChild(songPoster);
+
+                    // Append the song container to the recommendations div
+                    recommendationsDiv.appendChild(songContainer);
+                });
             } else {
                 recommendationsDiv.innerHTML = "<p>No recommendations found.</p>";
+            }
+        }
+
+
+        // Fetch the music poster URL using Last.fm API
+        async function fetchMusicPoster(songTitle) {
+            const apiKey = "YOUR_LASTFM_API_KEY";  // Replace with your Last.fm API key
+            const url = `https://ws.audioscrobbler.com/2.0/?method=track.search&track=${encodeURIComponent(songTitle)}&api_key=${apiKey}&format=json`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                const track = data.results.trackmatches.track[0]; // Get the first result
+
+                if (track && track.image && track.image.length > 0) {
+                    // Return the largest available image (typically the last image in the array)
+                    return track.image[track.image.length - 1]['#text'];
+                } else {
+                    return null;  // No poster found
+                }
+            } catch (error) {
+                console.error("Error fetching music poster:", error);
+                return null;  // Return null if there's an error fetching the poster
             }
         }
 
@@ -85,16 +138,35 @@
             const recommendationList = document.getElementById('bookRecommendationList');
             recommendationList.innerHTML = '';
 
+            // Set up the container for horizontal layout
+            recommendationList.style.display = 'flex';
+            //recommendationList.style.flexWrap = 'wrap';  // This ensures items wrap when there's no space
+
             if (data.recommendations.length > 0) {
                 data.recommendations.forEach(book => {
-                    const listItem = document.createElement('li');
-                    listItem.textContent = book;
-                    recommendationList.appendChild(listItem);
+                    // Create title and poster elements
+                    const bookContainer = document.createElement('div');
+                    bookContainer.classList.add('recommendation-item');
+
+                    const bookTitleElement = document.createElement('h4');
+                    bookTitleElement.textContent = book.title;
+
+                    const bookPoster = document.createElement('img');
+                    bookPoster.src = book.poster_url;
+                    bookPoster.alt = book.title;
+                    bookPoster.style.width = "150px"; // Set fixed width
+                    bookPoster.style.height = "auto"; // Maintain aspect ratio
+
+                    // Append elements to the container
+                    bookContainer.appendChild(bookTitleElement);
+                    bookContainer.appendChild(bookPoster);
+                    recommendationList.appendChild(bookContainer);
                 });
             } else {
-                recommendationList.innerHTML = '<li>Book not found. Please try another.</li>';
+                recommendationList.innerHTML = '<p>Book not found. Please try another.</p>';
             }
         }
+
     </script>
 </body>
 </html>
