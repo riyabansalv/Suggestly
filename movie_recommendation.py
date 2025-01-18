@@ -5,9 +5,10 @@ class MovieRecommender:
     def __init__(self, movies_path, similarity_path):
         self.movies = pickle.load(open(movies_path, "rb"))
         self.similarity = pickle.load(open(similarity_path, "rb"))
+        self.api_key = os.getenv("TMDB_API_KEY")  
     
     def fetch_poster(self, movie_id):
-        url = ""
+        url = f"https://api.themoviedb.org/3/movie/{movie_id}?api_key={self.api_key}&language=en-US"
         data = requests.get(url).json()
         poster_path = data.get('poster_path', '')
         return f"https://image.tmdb.org/t/p/w500/{poster_path}" if poster_path else ""
