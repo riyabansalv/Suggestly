@@ -9,12 +9,14 @@ import pandas as pd
 app = Flask(__name__)
 
 # Initialize the recommenders
-music_recommender = MusicRecommender("music_list.pkl", "similarity.pkl")
-book_recommender = BookRecommender("book_list.pkl", "similarity.pkl")
+music_recommender = MusicRecommender("music_list.pkl", "music_similarity.pkl")
+book_recommender = BookRecommender("book_list.pkl", "book_similarity.pkl")
+movie_recommender = MovieRecommender("movies_list.pkl", "movie_similarity.pkl")
 
 # Load the music dataframe globally
 music_df = pd.read_pickle("music_list.pkl")
 books_df = pd.read_pickle("book_list.pkl")
+movies_df = pd.read_pickle("movies_list.pkl")
 
 
 @app.route("/")
@@ -74,6 +76,22 @@ def get_titles():
 
 
 
+# Movie recommendation routes
+@app.route("/recommend_movies", methods=["POST"])
+def recommend_movies():
+    data = request.json
+    movie_title = data.get("movie_title", "")
+    recommendations = movie_recommender.recommend(movie_title)
+    return jsonify({"recommendations": recommendations})
+
+@app.route("/get_titles", methods=["GET"])
+def get_titles():
+    query = request.args.get("q", "").lower()
+    if not query:
+        return jsonify({"titles": []})
+    
+    matching_titles = movies_df[movies_df['title'].str.lower().str.contains(query, na=False)]['title'].head(10).tolist()
+    return jsonify({"titles": matching_titles})
 
 
 
