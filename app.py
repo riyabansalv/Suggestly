@@ -1,14 +1,10 @@
 from flask import Flask, request, jsonify, render_template
 from recommendation import MusicRecommender
 from book_recommendation import BookRecommender
-<<<<<<< HEAD
-import requests  # Needed to fetch book posters from an external API
-=======
 from movie_recommendation import MovieRecommender
 from games_recommendation import GameRecommender
 import pandas as pd
 
->>>>>>> eb5356245ef70354f8aa6aaa14198d4db7fb85d6
 
 app = Flask(__name__)
 
