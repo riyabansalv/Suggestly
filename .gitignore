@@ -11,3 +11,9 @@ data/
 *.log
 *.tmp
 *.bak
+
+# Ignore environment files
+.env
+node_modules/
+dist/
+build/
