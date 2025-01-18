@@ -1,38 +1,38 @@
-import pandas as pd
-import numpy as np
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
+import pickle
+import requests
+
 
 class BookRecommender:
-    def __init__(self):
-        # Load and clean the dataset
-        self.df = pd.read_csv('booksumm.csv')
-        self.df.dropna(subset=['Book-title', 'Author', 'Plot-summary'], inplace=True)
-        
-        # Process genres (remove nested structure if present)
-        self.df['Book genres'] = self.df['Book genres'].str.replace('[{}"/]', '', regex=True)
-        
-        # Create weighted tags column
-        self.df['tags'] = (
-            (self.df['Author'] + ' ') * 1 +  # Lower weight for Author
-            (self.df['Book genres'].fillna('') + ' ') * 2 +  # Medium weight for genres
-            (self.df['Plot-summary'] + ' ') * 3  # Higher weight for summary
-        ).str.lower()
-        
-        # Prepare data for recommendations using TF-IDF
-        self.new_df = self.df[['Book-title', 'tags']].rename(columns={'Book-title': 'title'})
-        self.tfidf = TfidfVectorizer(max_features=2000, stop_words='english')
-        self.vectors = self.tfidf.fit_transform(self.new_df['tags']).toarray()
-        self.similarity = cosine_similarity(self.vectors)
+    def __init__(self, books_path, similarity_path):
+        self.books = pickle.load(open(books_path, "rb"))
+        self.similarity = pickle.load(open(similarity_path, "rb"))
+
+    def fetch_book_poster(self, book_title):
+        """
+        Fetch book poster using Google Books API.
+        """
+        api_url = f"https://www.googleapis.com/books/v1/volumes?q={book_title}&fields=items(volumeInfo(imageLinks/thumbnail))&maxResults=1"
+        response = requests.get(api_url)
+        if response.status_code == 200:
+            data = response.json()
+            try:
+                return data['items'][0]['volumeInfo']['imageLinks']['thumbnail']
+            except (KeyError, IndexError):
+                return "https://via.placeholder.com/128x192?text=No+Image"  # Fallback for missing image
+        return "https://via.placeholder.com/128x192?text=Error"
 
     def recommend(self, book_title):
         try:
-            # Find index of the given book
-            book_index = self.new_df[self.new_df['title'].str.lower() == book_title.lower()].index[0]
-            distances = self.similarity[book_index]
+            index = self.books[self.books['title'] == book_title].index[0]
+            distances = sorted(list(enumerate(self.similarity[index])), reverse=True, key=lambda x: x[1])[1:6]
+            recommendations = []
 
-            # Get top 5 recommendations
-            book_list = sorted(list(enumerate(distances)), reverse=True, key=lambda x: x[1])[1:6]
-            return [self.new_df.iloc[i[0]].title for i in book_list]
+            for i in distances:
+                book_id = self.books.iloc[i[0]]
+                recommendations.append({
+                    "title": self.books.iloc[i[0]].title,
+                    "poster": self.fetch_book_poster(self.books.iloc[i[0]].title)
+                })
+            return recommendations
         except IndexError:
-            return ["Book not found. Please try another."]
+            return [{"title": "Book not found. Please try another.", "poster": ""}]

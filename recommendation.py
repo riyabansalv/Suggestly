@@ -1,40 +1,24 @@
-import numpy as np
+import pickle
+import requests
 import pandas as pd
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
 
 class MusicRecommender:
-    def __init__(self, csv_path):
-        # Load and clean the dataset
-        self.df = pd.read_csv(csv_path)
-        self.df.dropna(inplace=True)
-        self.df.drop_duplicates(inplace=True)
+    def __init__(self, music_path, similarity_path):
+        self.music_df = pickle.load(open(music_path, "rb"))
+        self.similarity = pickle.load(open(similarity_path, "rb"))
 
-        # Process columns
-        self.df['User-Rating'] = self.df['User-Rating'].str[:3]
-        self.df['Album/Movie'] = self.df['Album/Movie'].str.replace(' ', '')
-        self.df['Singer/Artists'] = self.df['Singer/Artists'].str.replace(' ', '').str.replace(',', ' ')
-
-        # Create tags column
-        self.df['tags'] = (self.df['Singer/Artists'] + ' ' +
-                           self.df['Genre'] + ' ' +
-                           self.df['Album/Movie'] + ' ' +
-                           self.df['User-Rating']).str.lower()
-
-        # Prepare data for recommendations
-        self.new_df = self.df[['Song-Name', 'tags']].rename(columns={'Song-Name': 'title'})
-        self.cv = CountVectorizer(max_features=2000)
-        self.vectors = self.cv.fit_transform(self.new_df['tags']).toarray()
-        self.similarity = cosine_similarity(self.vectors)
 
     def recommend(self, music_title):
         try:
-            # Find index of the given song
-            music_index = self.new_df[self.new_df['title'] == music_title].index[0]
+            music_index = self.music_df[self.music_df['title'].str.lower() == music_title.lower()].index[0]
             distances = self.similarity[music_index]
-
-            # Get top 5 recommendations
             music_list = sorted(list(enumerate(distances)), reverse=True, key=lambda x: x[1])[1:6]
-            return [self.new_df.iloc[i[0]].title for i in music_list]
+
+            recommended_songs = []
+            for i in music_list:
+                song_title = self.music_df.iloc[i[0]]['title']
+                recommended_songs.append(song_title)
+        
+            return recommended_songs
         except IndexError:
-            return ["Song not found. Please try another."]
+            return [("Song not found. Please try another.")]

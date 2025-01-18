@@ -3,6 +3,7 @@ from recommendation import MusicRecommender
 from book_recommendation import BookRecommender
 from movie_recommendation import MovieRecommender
 from games_recommendation import GameRecommender
+import pandas as pd
 
 
 app = Flask(__name__)
@@ -12,6 +13,8 @@ music_recommender = MusicRecommender("ex.csv")
 book_recommender = BookRecommender()
 movie_recommender = MovieRecommender("movies_list.pkl", "similarity.pkl")
 game_recommender = GameRecommender("game_data.pkl","games_similarity.pkl")
+
+music_df = pd.read_csv('ex.csv')
 
 
 @app.route("/")

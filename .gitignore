@@ -1,11 +1,13 @@
-# Ignore all .pkl files
+# Ignore dataset files
+data/
+*.csv
+*.tsv
+*.json
+
+# Ignore large .pkl files
 *.pkl
 
-# Ignore dataset files and directories
-datasets/
-
-# Ignore Python bytecode files
-*.pyc
-
-# Ignore logs
+# Ignore other temporary or unnecessary files
 *.log
+*.tmp
+*.bak
