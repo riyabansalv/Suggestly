@@ -126,3 +126,25 @@ button:hover {
     filter: grayscale(100%);
     transform: scale(0.9)
 }
+
+#gameSuggestions {
+    border: 1px solid #ccc;
+    max-height: 200px; /* Limit to five items (adjust as needed based on item height) */
+    overflow-y: auto; /* Enables scrolling for additional items */
+    background-color: rgba(25, 25, 35, 0.9); /* Consistent dropdown background */
+    border-radius: 8px; /* Rounded edges */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for dropdown */
+    display: none; /* Initially hidden */
+}
+
+#gameSuggestions div {
+    padding: 10px;
+    cursor: pointer;
+    background-color: rgba(25, 25, 35, 0.9); /* Default background */
+    color: #fff;
+}
+
+#gameSuggestions div:hover {
+    background-color: #007bff; /* Highlight on hover */
+    color: #fff; /* Text remains white on hover */
+}

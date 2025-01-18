@@ -11,7 +11,7 @@
         <h1>Suggestly</h1>
         <p>Tell us what kind of suggestion you're after</p>
         
-        <!-- Buttons to navigate to music or book recommendations -->
+        
         <button onclick="showMusicRecommendation()">Music Recommendation</button>
         <button onclick="showBookRecommendation()">Book Recommendation</button>
         <button onclick="showMovieRecommendation()">Movie Recommendation</button>
@@ -20,35 +20,46 @@
         
         <!-- Music Recommendation Section -->
         <div id="musicSection" style="display: none;">
-            <h2>Music Recommendation</h2>
-            <input type="text" id="musicInput" placeholder="Enter a song title">
+            <h2>Musics</h2>
+            <p>Type a Song Name to get suggestions:</p>
+            <input type="text" id="musicInput" placeholder="Enter a music title" oninput="fetchMusicSuggestions()">
+            <div id="suggestions" style="border: 1px solid #ccc; max-height: 200px; overflow-y: auto; display: none;"></div>
             <button onclick="getMusicRecommendations()">Suggest</button>
-            <div id="musicRecommendations" class="recommendation-section"></div>
+            <div id="musicRecommendations"></div>
         </div>
         
+
         <!-- Book Recommendation Section -->
         <div id="bookSection" style="display: none;">
-            <h2>Book Recommendation</h2>
-            <input type="text" id="bookTitle" placeholder="Enter Book Title">
+            <h2>Books</h2>
+            <p>Type a Book Name to get suggestions:</p>
+            <input type="text" id="bookInput" placeholder="Enter a book title" oninput="fetchBookSuggestions()">
+            <div id="suggestions" style="border: 1px solid #ccc; max-height: 200px; overflow-y: auto; display: none;"></div>
             <button onclick="getBookRecommendations()">Suggest</button>
-            <div id="bookRecommendations">
-                <h3>Recommendations:</h3>
-                <div id="bookRecommendationList" class="recommendation-section"></div>
-            </div>
+            <div id="bookRecommendations"></div>
         </div>
+
+
 
         <!-- Movie Recommendation Section -->
         <div id="movieSection" style="display: none;">
-            <h2>Movie Recommendation</h2>
-            <input type="text" id="movieInput" placeholder="Enter Movie Title">
+            <h2>Movies</h2>
+            <p>Type a Movie Name to get suggestions:</p>
+            <input type="text" id="movieInput" placeholder="Enter a movie title" oninput="fetchMovieSuggestions()">
+            <div id="suggestions" style="border: 1px solid #ccc; max-height: 200px; overflow-y: auto; display: none;"></div>
             <button onclick="getMovieRecommendations()">Suggest</button>
             <div id="movieRecommendations"></div>
         </div>
 
+
+
         <!-- Game Recommendation Section -->
         <div id="gameSection" style="display: none;"> <!-- New section -->
-            <h2>Game Recommendation</h2>
-            <input type="text" id="gameInput" placeholder="Enter Game Title">
+            <h2>Games</h2>
+            <p>Type a Game Name to get suggestions:</p>
+            <input type="text" id="gameInput" placeholder="Enter a game title" oninput="fetchGameSuggestions()">
+            <div id="gameSuggestions" style="border: 1px solid #ccc; max-height: 200px; overflow-y: auto; display: none;">
+            </div>
             <button onclick="getGameRecommendations()">Suggest</button>
             <div id="gameRecommendations"></div>
         </div>  
@@ -89,7 +100,36 @@
             document.getElementById("movieSection").style.display = "none";
         }
 
-        // Fetch music recommendations
+        // fetching music recommendations
+        async function fetchMusicSuggestions() {
+            const input = document.getElementById("musicInput").value;
+            const suggestionsDiv = document.getElementById("suggestions");
+            if (input.trim() === "") {
+                suggestionsDiv.style.display = "none";
+                return;
+            }
+
+            const response = await fetch(`/get_titles?q=${encodeURIComponent(input)}`);
+            const data = await response.json();
+
+            if (data.titles && data.titles.length > 0) {
+                suggestionsDiv.innerHTML = data.titles.map(title => 
+                    `<div id="suggest-${title}" onclick="selectMusicSuggestion('${title}')">${title}</div>`
+                ).join('');
+                suggestionsDiv.style.display = "block";
+            } else {
+                suggestionsDiv.innerHTML = "<p>No suggestions found.</p>";
+                suggestionsDiv.style.display = "block";
+            }
+        }
+
+
+        function selectMusicSuggestion(title) {
+            document.getElementById("musicInput").value = title;
+            document.getElementById("suggestions").style.display = "none";
+        }
+
+
         async function getMusicRecommendations() {
             const musicTitle = document.getElementById("musicInput").value;
             const response = await fetch("/recommend_music", {
@@ -103,71 +143,54 @@
             const data = await response.json();
             const recommendationsDiv = document.getElementById("musicRecommendations");
 
-            // Check if recommendations are present
-            if (data.recommendations && data.recommendations.length > 0) {
-                recommendationsDiv.innerHTML = `<h2>Recommendations:</h2>`;
-                recommendationsDiv.style.display = "flex";
-                recommendationsDiv.style.flexWrap = "wrap";
-
-                data.recommendations.forEach((song) => {
-                    const songTitle = song.title;  // Title of the song
-                    const posterUrl = song.poster_url || "https://via.placeholder.com/150"; // Fallback to placeholder if poster URL is missing
-
-                    // Create the song container
-                    const songContainer = document.createElement('div');
-                    songContainer.style.marginRight = "20px";
-                    songContainer.style.textAlign = "center";
-                    
-                    // Create the song title element
-                    const songTitleElement = document.createElement('h4');
-                    songTitleElement.textContent = songTitle;
-
-                    // Create the poster image element
-                    const songPoster = document.createElement('img');
-                    songPoster.src = posterUrl;
-                    songPoster.alt = songTitle;
-                    songPoster.style.width = "150px";  // Set width for poster
-                    songPoster.style.height = "auto";  // Maintain aspect ratio
-
-                    // Append title and poster to the song container
-                    songContainer.appendChild(songTitleElement);
-                    songContainer.appendChild(songPoster);
-
-                    // Append the song container to the recommendations div
-                    recommendationsDiv.appendChild(songContainer);
-                });
+            if (data.recommendations) {
+                recommendationsDiv.innerHTML = `<h2>Recommendations:</h2>
+                    <div class="recommendations-container">${
+                        data.recommendations.map(music => `
+                            <div class="game-card">
+                                <p>${music.title}</p>
+                            </div>
+                        `).join('')
+                    }</div>`;
             } else {
                 recommendationsDiv.innerHTML = "<p>No recommendations found.</p>";
             }
         }
 
 
-        // Fetch the music poster URL using Last.fm API
-        async function fetchMusicPoster(songTitle) {
-            const apiKey = "YOUR_LASTFM_API_KEY";  // Replace with your Last.fm API key
-            const url = `https://ws.audioscrobbler.com/2.0/?method=track.search&track=${encodeURIComponent(songTitle)}&api_key=${apiKey}&format=json`;
 
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-                const track = data.results.trackmatches.track[0]; // Get the first result
 
-                if (track && track.image && track.image.length > 0) {
-                    // Return the largest available image (typically the last image in the array)
-                    return track.image[track.image.length - 1]['#text'];
-                } else {
-                    return null;  // No poster found
-                }
-            } catch (error) {
-                console.error("Error fetching music poster:", error);
-                return null;  // Return null if there's an error fetching the poster
+        // fetching book suggestions
+        async function fetchBookSuggestions() {
+            const input = document.getElementById("bookInput").value;
+            const suggestionsDiv = document.getElementById("suggestions");
+            if (input.trim() === "") {
+                suggestionsDiv.style.display = "none";
+                return;
+            }
+
+            const response = await fetch(`/get_titles?q=${encodeURIComponent(input)}`);
+            const data = await response.json();
+
+            if (data.titles && data.titles.length > 0) {
+                suggestionsDiv.innerHTML = data.titles.map(title => 
+                    `<div onclick="selectBookSuggestion('${title}')">${title}</div>`
+                ).join('');
+                suggestionsDiv.style.display = "block";
+            } else {
+                suggestionsDiv.innerHTML = "<p>No suggestions found.</p>";
+                suggestionsDiv.style.display = "block";
             }
         }
 
-        // Fetch book recommendations
+        function selectBookSuggestion(title) {
+            document.getElementById("bookInput").value = title;
+            document.getElementById("suggestions").style.display = "none";
+        }
+
         async function getBookRecommendations() {
-            const bookTitle = document.getElementById('bookTitle').value;
-            const response = await fetch(`/recommend_book`, {
+            const bookTitle = document.getElementById("bookInput").value;
+            const response = await fetch("/recommend_books", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -176,42 +199,55 @@
             });
 
             const data = await response.json();
-            const recommendationList = document.getElementById('bookRecommendationList');
-            recommendationList.innerHTML = '';
+            const recommendationsDiv = document.getElementById("bookRecommendations");
 
-            // Set up the container for horizontal layout
-            recommendationList.style.display = 'flex';
-            //recommendationList.style.flexWrap = 'wrap';  // This ensures items wrap when there's no space
-
-            if (data.recommendations.length > 0) {
-                data.recommendations.forEach(book => {
-                    // Create title and poster elements
-                    const bookContainer = document.createElement('div');
-                    bookContainer.classList.add('recommendation-item');
-
-                    const bookTitleElement = document.createElement('h4');
-                    bookTitleElement.textContent = book.title;
-
-                    const bookPoster = document.createElement('img');
-                    bookPoster.src = book.poster_url;
-                    bookPoster.alt = book.title;
-                    bookPoster.style.width = "150px"; // Set fixed width
-                    bookPoster.style.height = "auto"; // Maintain aspect ratio
-
-                    // Append elements to the container
-                    bookContainer.appendChild(bookTitleElement);
-                    bookContainer.appendChild(bookPoster);
-                    recommendationList.appendChild(bookContainer);
-                });
+            if (data.recommendations) {
+                recommendationsDiv.innerHTML = `<h2>Recommendations:</h2>
+                    <div class="recommendations-container">${
+                        data.recommendations.map(book => `
+                            <div class="game-card">
+                                <img src="${book.poster}" alt="${book.title}" style="width: 150px; height: auto;">
+                                <p>${book.title}</p>
+                            </div>
+                        `).join('')
+                    }</div>`;
             } else {
-                recommendationList.innerHTML = '<p>Book not found. Please try another.</p>';
+                recommendationsDiv.innerHTML = "<p>No recommendations found.</p>";
             }
         }
 
-        // Fetch movie recommendations
+
+        //fetch movie suggestions
+        async function fetchMovieSuggestions() {
+            const input = document.getElementById("movieInput").value;
+            const suggestionsDiv = document.getElementById("suggestions");
+            if (input.trim() === "") {
+                suggestionsDiv.style.display = "none";
+                return;
+            }
+
+            const response = await fetch(`/get_titles?q=${encodeURIComponent(input)}`);
+            const data = await response.json();
+
+            if (data.titles && data.titles.length > 0) {
+                suggestionsDiv.innerHTML = data.titles.map(title => 
+                    `<div onclick="selectMovieSuggestion('${title}')">${title}</div>`
+                ).join('');
+                suggestionsDiv.style.display = "block";
+            } else {
+                suggestionsDiv.innerHTML = "<p>No suggestions found.</p>";
+                suggestionsDiv.style.display = "block";
+            }
+        }
+
+        function selectMovieSuggestion(title) {
+            document.getElementById("movieInput").value = title;
+            document.getElementById("suggestions").style.display = "none";
+        }
+
         async function getMovieRecommendations() {
             const movieTitle = document.getElementById("movieInput").value;
-            const response = await fetch("/recommend_movie", {
+            const response = await fetch("/recommend_movies", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -224,31 +260,74 @@
 
             if (data.recommendations) {
                 recommendationsDiv.innerHTML = `<h2>Recommendations:</h2>
-                    <ul>${data.recommendations.map(movie => `<li>${movie}</li>`).join('')}</ul>`;
+                    <div class="recommendations-container">${
+                        data.recommendations.map(movie => `
+                            <div class="game-card">
+                                <img src="${movie.poster}" alt="${movie.title}" style="width: 150px; height: auto;">
+                                <p>${movie.title}</p>
+                            </div>
+                        `).join('')
+                    }</div>`;
             } else {
                 recommendationsDiv.innerHTML = "<p>No recommendations found.</p>";
             }
         }
 
-        // Fetch game recommendations
-        async function getGameRecommendations() { // New function
+
+
+        //fetch game suggestions
+        async function fetchGameSuggestions() {
+            const input = document.getElementById("gameInput").value;
+            const suggestionsDiv = document.getElementById("gameSuggestions");
+
+            if (input.trim() === "") {
+                suggestionsDiv.style.display = "none";
+                return;
+            }
+
+            const response = await fetch(`/get_titles?q=${encodeURIComponent(input)}`);
+            const data = await response.json();
+
+            if (data.titles && data.titles.length > 0) {
+                suggestionsDiv.innerHTML = data.titles.map(title =>
+                    `<div onclick="selectGameSuggestion('${title}')">${title}</div>`
+                ).join('');
+                suggestionsDiv.style.display = "block";
+            } else {
+                suggestionsDiv.innerHTML = "<p>No suggestions found.</p>";
+                suggestionsDiv.style.display = "block";
+            }
+        }
+
+        function selectGameSuggestion(title) {
+            const input = document.getElementById("gameInput");
+            input.value = title; // Update input field
+            document.getElementById("gameSuggestions").style.display = "none"; // Hide suggestions
+        }
+
+        async function getGameRecommendations() {
             const gameTitle = document.getElementById("gameInput").value;
-            const response = await fetch("/recommend_game", {
+            const response = await fetch("/recommend_games", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ game_name: gameTitle })
+                body: JSON.stringify({ game_title: gameTitle })
             });
 
             const data = await response.json();
             const recommendationsDiv = document.getElementById("gameRecommendations");
 
             if (data.recommendations) {
+                console.log(data.recommendations)
                 recommendationsDiv.innerHTML = `<h2>Recommendations:</h2>
-                    <ul>${data.recommendations.map(game => `<li>${game}</li>`).join('')}</ul>`;
-            } else if (data.error) {
-                recommendationsDiv.innerHTML = `<p>${data.error}</p>`;
+                    <div class="recommendations-container">${data.recommendations.map(game => `
+                            <div class="game-card">
+                                <img src="${game.image}" alt="${game.title}" style="width: 150px; height: auto;">
+                                <p>${game.title}</p>
+                            </div>
+                        `).join('')}
+                    </div>`;
             } else {
                 recommendationsDiv.innerHTML = "<p>No recommendations found.</p>";
             }
