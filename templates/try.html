@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recommendation System</title>
+    <title>Suggestly</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
     <div class="container">
-        <h1>Recommendation System</h1>
-        <p>Select the type of recommendation you want:</p>
+        <h1>Suggestly</h1>
+        <p>Tell us what kind of suggestion you're after</p>
         
         <!-- Buttons to navigate to music or book recommendations -->
         <button onclick="showMusicRecommendation()">Music Recommendation</button>
@@ -22,7 +22,7 @@
         <div id="musicSection" style="display: none;">
             <h2>Music Recommendation</h2>
             <input type="text" id="musicInput" placeholder="Enter a song title">
-            <button onclick="getMusicRecommendations()">Get Recommendations</button>
+            <button onclick="getMusicRecommendations()">Suggest</button>
             <div id="musicRecommendations" class="recommendation-section"></div>
         </div>
         
@@ -30,7 +30,7 @@
         <div id="bookSection" style="display: none;">
             <h2>Book Recommendation</h2>
             <input type="text" id="bookTitle" placeholder="Enter Book Title">
-            <button onclick="getBookRecommendations()">Get Recommendations</button>
+            <button onclick="getBookRecommendations()">Suggest</button>
             <div id="bookRecommendations">
                 <h3>Recommendations:</h3>
                 <div id="bookRecommendationList" class="recommendation-section"></div>
@@ -41,7 +41,7 @@
         <div id="movieSection" style="display: none;">
             <h2>Movie Recommendation</h2>
             <input type="text" id="movieInput" placeholder="Enter Movie Title">
-            <button onclick="getMovieRecommendations()">Get Recommendations</button>
+            <button onclick="getMovieRecommendations()">Suggest</button>
             <div id="movieRecommendations"></div>
         </div>
 
@@ -49,7 +49,7 @@
         <div id="gameSection" style="display: none;"> <!-- New section -->
             <h2>Game Recommendation</h2>
             <input type="text" id="gameInput" placeholder="Enter Game Title">
-            <button onclick="getGameRecommendations()">Get Recommendations</button>
+            <button onclick="getGameRecommendations()">Suggest</button>
             <div id="gameRecommendations"></div>
         </div>  
 

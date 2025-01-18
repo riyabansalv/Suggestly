@@ -1,8 +1,8 @@
 from flask import Flask, request, jsonify, render_template
-from recommendation import MusicRecommender
+from music_recommendation import MusicRecommender
 from book_recommendation import BookRecommender
 from movie_recommendation import MovieRecommender
-from games_recommendation import GameRecommender
+from game_recommendation import GameRecommender
 import pandas as pd
 
 
