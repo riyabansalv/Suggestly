@@ -12,16 +12,15 @@
         <p>Tell us what kind of suggestion you're after 👉👈</p>
         
         
-        <button onclick="showMusicRecommendation()">Music Recommendation</button>
-        <button onclick="showBookRecommendation()">Book Recommendation</button>
-        <button onclick="showMovieRecommendation()">Movie Recommendation</button>
-        <button onclick="showGameRecommendation()">Game Recommendation</button>
+        <button onclick="showMusicRecommendation()">Music</button>
+        <button onclick="showBookRecommendation()">Book</button>
+        <button onclick="showMovieRecommendation()">Movie</button>
+        <button onclick="showGameRecommendation()">Game</button>
         
         
         <!-- Music Recommendation Section -->
         <div id="musicSection" style="display: none;">
-            <h2>Musics</h2>
-            <p>Type a Song Name to get suggestions:</p>
+            <h2>💃🎶Music🎵🕺</h2>
             <input type="text" id="musicInput" placeholder="Enter a music title" oninput="fetchMusicSuggestions()">
             <div id="musicSuggestions" style="border: 1px solid #ccc; max-height: 200px; overflow-y: auto; display: none;"></div>
             <button onclick="getMusicRecommendations()">Suggest</button>
@@ -31,8 +30,7 @@
 
         <!-- Book Recommendation Section -->
         <div id="bookSection" style="display: none;">
-            <h2>Books</h2>
-            <p>Type a Book Name to get suggestions:</p>
+            <h2>📚Books📖</h2>
             <input type="text" id="bookInput" placeholder="Enter a book title" oninput="fetchBookSuggestions()">
             <div id="bookSuggestions" style="border: 1px solid #ccc; max-height: 200px; overflow-y: auto; display: none;"></div>
             <button onclick="getBookRecommendations()">Suggest</button>
@@ -43,8 +41,7 @@
 
         <!-- Movie Recommendation Section -->
         <div id="movieSection" style="display: none;">
-            <h2>Movies</h2>
-            <p>Type a Movie Name to get suggestions:</p>
+            <h2>🎥Movies🎞️</h2>
             <input type="text" id="movieInput" placeholder="Enter a movie title" oninput="fetchMovieSuggestions()">
             <div id="movieSuggestions" style="border: 1px solid #ccc; max-height: 200px; overflow-y: auto; display: none;"></div>
             <button onclick="getMovieRecommendations()">Suggest</button>
@@ -55,8 +52,7 @@
 
         <!-- Game Recommendation Section -->
         <div id="gameSection" style="display: none;"> <!-- New section -->
-            <h2>Games</h2>
-            <p>Type a Game Name to get suggestions:</p>
+            <h2>🕹️Games🎮</h2>
             <input type="text" id="gameInput" placeholder="Enter a game title" oninput="fetchGameSuggestions()">
             <div id="gameSuggestions" style="border: 1px solid #ccc; max-height: 200px; overflow-y: auto; display: none;">
             </div>
@@ -64,6 +60,11 @@
             <div id="gameRecommendations"></div>
         </div>  
 
+    </div>
+
+    <!-- Footer Section -->
+    <div class="footer">
+        <p>Developed by <b>Riya Bansal V</b> & <b>H Monish Raj</b></p>
     </div>
 
 
