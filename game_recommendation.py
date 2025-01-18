@@ -11,7 +11,7 @@ class GameRecommender:
         self.new_df = self.games_data[['AppID', 'Name', 'Tags']]
 
         # Load image data for poster fetching
-        self.image_data = pd.read_csv('image_data.csv')  # Open the image dataset
+        self.image_data = pd.read_csv('game_image_data.csv')  # Open the image dataset
         self.image_data = self.image_data[['AppID', 'Headerimage']]  # Extract relevant columns
         self.image_data.set_index('AppID', inplace=True)  # Set AppID as index for easy lookup
 
