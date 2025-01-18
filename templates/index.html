@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Suggestly</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>Suggestly</h1>
-        <p>Tell us what kind of suggestion you're after</p>
+        <h1>❤️ Suggestly ❤️</h1>
+        <p>Tell us what kind of suggestion you're after 👉👈</p>
         
         
         <button onclick="showMusicRecommendation()">Music Recommendation</button>
@@ -23,7 +23,7 @@
             <h2>Musics</h2>
             <p>Type a Song Name to get suggestions:</p>
             <input type="text" id="musicInput" placeholder="Enter a music title" oninput="fetchMusicSuggestions()">
-            <div id="suggestions" style="border: 1px solid #ccc; max-height: 200px; overflow-y: auto; display: none;"></div>
+            <div id="musicSuggestions" style="border: 1px solid #ccc; max-height: 200px; overflow-y: auto; display: none;"></div>
             <button onclick="getMusicRecommendations()">Suggest</button>
             <div id="musicRecommendations"></div>
         </div>
@@ -34,7 +34,7 @@
             <h2>Books</h2>
             <p>Type a Book Name to get suggestions:</p>
             <input type="text" id="bookInput" placeholder="Enter a book title" oninput="fetchBookSuggestions()">
-            <div id="suggestions" style="border: 1px solid #ccc; max-height: 200px; overflow-y: auto; display: none;"></div>
+            <div id="bookSuggestions" style="border: 1px solid #ccc; max-height: 200px; overflow-y: auto; display: none;"></div>
             <button onclick="getBookRecommendations()">Suggest</button>
             <div id="bookRecommendations"></div>
         </div>
@@ -46,7 +46,7 @@
             <h2>Movies</h2>
             <p>Type a Movie Name to get suggestions:</p>
             <input type="text" id="movieInput" placeholder="Enter a movie title" oninput="fetchMovieSuggestions()">
-            <div id="suggestions" style="border: 1px solid #ccc; max-height: 200px; overflow-y: auto; display: none;"></div>
+            <div id="movieSuggestions" style="border: 1px solid #ccc; max-height: 200px; overflow-y: auto; display: none;"></div>
             <button onclick="getMovieRecommendations()">Suggest</button>
             <div id="movieRecommendations"></div>
         </div>
@@ -64,8 +64,8 @@
             <div id="gameRecommendations"></div>
         </div>  
 
-
     </div>
+
 
     <script>
         // Show the music recommendation section and hide others
@@ -103,13 +103,13 @@
         // fetching music recommendations
         async function fetchMusicSuggestions() {
             const input = document.getElementById("musicInput").value;
-            const suggestionsDiv = document.getElementById("suggestions");
+            const suggestionsDiv = document.getElementById("musicSuggestions");
             if (input.trim() === "") {
                 suggestionsDiv.style.display = "none";
                 return;
             }
 
-            const response = await fetch(`/get_titles?q=${encodeURIComponent(input)}`);
+            const response = await fetch(`/get_music_titles?q=${encodeURIComponent(input)}`);
             const data = await response.json();
 
             if (data.titles && data.titles.length > 0) {
@@ -118,7 +118,7 @@
                 ).join('');
                 suggestionsDiv.style.display = "block";
             } else {
-                suggestionsDiv.innerHTML = "<p>No suggestions found.</p>";
+                suggestionsDiv.innerHTML = "<p>No suggestions found 🙁</p>";
                 suggestionsDiv.style.display = "block";
             }
         }
@@ -126,7 +126,7 @@
 
         function selectMusicSuggestion(title) {
             document.getElementById("musicInput").value = title;
-            document.getElementById("suggestions").style.display = "none";
+            document.getElementById("musicSuggestions").style.display = "none";
         }
 
 
@@ -144,7 +144,7 @@
             const recommendationsDiv = document.getElementById("musicRecommendations");
 
             if (data.recommendations) {
-                recommendationsDiv.innerHTML = `<h2>Recommendations:</h2>
+                recommendationsDiv.innerHTML = `<h2>🎼🎶We suggest you to listen to:</h2>
                     <div class="recommendations-container">${
                         data.recommendations.map(music => `
                             <div class="game-card">
@@ -153,7 +153,7 @@
                         `).join('')
                     }</div>`;
             } else {
-                recommendationsDiv.innerHTML = "<p>No recommendations found.</p>";
+                recommendationsDiv.innerHTML = "<p>No suggestions found 🙁</p>";
             }
         }
 
@@ -163,13 +163,13 @@
         // fetching book suggestions
         async function fetchBookSuggestions() {
             const input = document.getElementById("bookInput").value;
-            const suggestionsDiv = document.getElementById("suggestions");
+            const suggestionsDiv = document.getElementById("bookSuggestions");
             if (input.trim() === "") {
                 suggestionsDiv.style.display = "none";
                 return;
             }
 
-            const response = await fetch(`/get_titles?q=${encodeURIComponent(input)}`);
+            const response = await fetch(`/get_book_titles?q=${encodeURIComponent(input)}`);
             const data = await response.json();
 
             if (data.titles && data.titles.length > 0) {
@@ -178,14 +178,14 @@
                 ).join('');
                 suggestionsDiv.style.display = "block";
             } else {
-                suggestionsDiv.innerHTML = "<p>No suggestions found.</p>";
+                suggestionsDiv.innerHTML = "<p>No suggestions found 🙁</p>";
                 suggestionsDiv.style.display = "block";
             }
         }
 
         function selectBookSuggestion(title) {
             document.getElementById("bookInput").value = title;
-            document.getElementById("suggestions").style.display = "none";
+            document.getElementById("bookSuggestions").style.display = "none";
         }
 
         async function getBookRecommendations() {
@@ -202,7 +202,7 @@
             const recommendationsDiv = document.getElementById("bookRecommendations");
 
             if (data.recommendations) {
-                recommendationsDiv.innerHTML = `<h2>Recommendations:</h2>
+                recommendationsDiv.innerHTML = `<h2>📚 We suggest you to read:</h2>
                     <div class="recommendations-container">${
                         data.recommendations.map(book => `
                             <div class="game-card">
@@ -212,7 +212,7 @@
                         `).join('')
                     }</div>`;
             } else {
-                recommendationsDiv.innerHTML = "<p>No recommendations found.</p>";
+                recommendationsDiv.innerHTML = "<p>No suggestions found 🙁</p>";
             }
         }
 
@@ -220,13 +220,13 @@
         //fetch movie suggestions
         async function fetchMovieSuggestions() {
             const input = document.getElementById("movieInput").value;
-            const suggestionsDiv = document.getElementById("suggestions");
+            const suggestionsDiv = document.getElementById("movieSuggestions");
             if (input.trim() === "") {
                 suggestionsDiv.style.display = "none";
                 return;
             }
 
-            const response = await fetch(`/get_titles?q=${encodeURIComponent(input)}`);
+            const response = await fetch(`/get_movie_titles?q=${encodeURIComponent(input)}`);
             const data = await response.json();
 
             if (data.titles && data.titles.length > 0) {
@@ -235,14 +235,14 @@
                 ).join('');
                 suggestionsDiv.style.display = "block";
             } else {
-                suggestionsDiv.innerHTML = "<p>No suggestions found.</p>";
+                suggestionsDiv.innerHTML = "<p>No suggestions found 🙁</p>";
                 suggestionsDiv.style.display = "block";
             }
         }
 
         function selectMovieSuggestion(title) {
             document.getElementById("movieInput").value = title;
-            document.getElementById("suggestions").style.display = "none";
+            document.getElementById("movieSuggestions").style.display = "none";
         }
 
         async function getMovieRecommendations() {
@@ -259,7 +259,7 @@
             const recommendationsDiv = document.getElementById("movieRecommendations");
 
             if (data.recommendations) {
-                recommendationsDiv.innerHTML = `<h2>Recommendations:</h2>
+                recommendationsDiv.innerHTML = `<h2>🎥We suggest you to watch:</h2>
                     <div class="recommendations-container">${
                         data.recommendations.map(movie => `
                             <div class="game-card">
@@ -269,7 +269,7 @@
                         `).join('')
                     }</div>`;
             } else {
-                recommendationsDiv.innerHTML = "<p>No recommendations found.</p>";
+                recommendationsDiv.innerHTML = "<p>No suggestions found 🙁</p>";
             }
         }
 
@@ -285,7 +285,7 @@
                 return;
             }
 
-            const response = await fetch(`/get_titles?q=${encodeURIComponent(input)}`);
+            const response = await fetch(`/get_game_titles?q=${encodeURIComponent(input)}`);
             const data = await response.json();
 
             if (data.titles && data.titles.length > 0) {
@@ -294,7 +294,7 @@
                 ).join('');
                 suggestionsDiv.style.display = "block";
             } else {
-                suggestionsDiv.innerHTML = "<p>No suggestions found.</p>";
+                suggestionsDiv.innerHTML = "<p>No suggestions found 🙁</p>";
                 suggestionsDiv.style.display = "block";
             }
         }
@@ -320,7 +320,7 @@
 
             if (data.recommendations) {
                 console.log(data.recommendations)
-                recommendationsDiv.innerHTML = `<h2>Recommendations:</h2>
+                recommendationsDiv.innerHTML = `<h2>🎮We suggest you to play:</h2>
                     <div class="recommendations-container">${data.recommendations.map(game => `
                             <div class="game-card">
                                 <img src="${game.image}" alt="${game.title}" style="width: 150px; height: auto;">
@@ -329,7 +329,7 @@
                         `).join('')}
                     </div>`;
             } else {
-                recommendationsDiv.innerHTML = "<p>No recommendations found.</p>";
+                recommendationsDiv.innerHTML = "<p>No suggestions found 🙁</p>";
             }
         }
 

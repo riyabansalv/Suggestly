@@ -36,8 +36,8 @@ def recommend_music():
     recommendations = music_recommender.recommend(music_title)
     return jsonify({"recommendations": [{"title": rec.title()} for rec in recommendations]})
 
-@app.route("/get_titles", methods=["GET"])
-def get_titles():
+@app.route("/get_music_titles", methods=["GET"])
+def get_music_titles():
     query = request.args.get("q", "").lower().strip()
     if not query:
         return jsonify({"titles": []})
@@ -66,8 +66,8 @@ def recommend_books():
     recommendations = book_recommender.recommend(book_title)
     return jsonify({"recommendations": recommendations})
 
-@app.route("/get_titles", methods=["GET"])
-def get_titles():
+@app.route("/get_book_titles", methods=["GET"])
+def get_book_titles():
     query = request.args.get("q", "").lower()
     if not query:
         return jsonify({"titles": []})
@@ -86,8 +86,8 @@ def recommend_movies():
     recommendations = movie_recommender.recommend(movie_title)
     return jsonify({"recommendations": recommendations})
 
-@app.route("/get_titles", methods=["GET"])
-def get_titles():
+@app.route("/get_movie_titles", methods=["GET"])
+def get_movie_titles():
     query = request.args.get("q", "").lower()
     if not query:
         return jsonify({"titles": []})
@@ -110,8 +110,8 @@ def recommend_games():
 
     return jsonify({"recommendations": recommendation_details})
 
-@app.route("/get_titles", methods=["GET"])
-def get_titles():
+@app.route("/get_game_titles", methods=["GET"])
+def get_game_titles():
     query = request.args.get("q", "").lower()
     if not query:
         return jsonify({"titles": []})

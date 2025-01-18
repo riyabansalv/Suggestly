@@ -17,3 +17,11 @@ data/
 node_modules/
 dist/
 build/
+
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pyo
+*.pyd
+*.ipynb_checkpoints/

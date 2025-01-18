@@ -127,6 +127,80 @@ button:hover {
     transform: scale(0.9)
 }
 
+/*music suggestions dropdown*/
+#musicSuggestions {
+    border: 1px solid #ccc;
+    max-height: 200px; /* Limit to five items (adjust as needed based on item height) */
+    overflow-y: auto; /* Enables scrolling for additional items */
+    background-color: rgba(25, 25, 35, 0.9); /* Consistent dropdown background */
+    border-radius: 8px; /* Rounded edges */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for dropdown */
+    display: none; /* Initially hidden */
+}
+
+#musicSuggestions div {
+    padding: 10px;
+    cursor: pointer;
+    background-color: rgba(25, 25, 35, 0.9); /* Default background */
+    color: #fff;
+}
+
+#musicSuggestions div:hover {
+    background-color: #007bff; /* Highlight on hover */
+    color: #fff; /* Text remains white on hover */
+}
+
+
+/*book suggestions dropdown*/
+#bookSuggestions {
+    border: 1px solid #ccc;
+    max-height: 200px; /* Limit to five items (adjust as needed based on item height) */
+    overflow-y: auto; /* Enables scrolling for additional items */
+    background-color: rgba(25, 25, 35, 0.9); /* Consistent dropdown background */
+    border-radius: 8px; /* Rounded edges */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for dropdown */
+    display: none; /* Initially hidden */
+}
+
+#bookSuggestions div {
+    padding: 10px;
+    cursor: pointer;
+    background-color: rgba(25, 25, 35, 0.9); /* Default background */
+    color: #fff;
+}
+
+#bookSuggestions div:hover {
+    background-color: #007bff; /* Highlight on hover */
+    color: #fff; /* Text remains white on hover */
+}
+
+
+/*movie suggestions dropdown*/
+#movieSuggestions {
+    border: 1px solid #ccc;
+    max-height: 200px; /* Limit to five items (adjust as needed based on item height) */
+    overflow-y: auto; /* Enables scrolling for additional items */
+    background-color: rgba(25, 25, 35, 0.9); /* Consistent dropdown background */
+    border-radius: 8px; /* Rounded edges */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow for dropdown */
+    display: none; /* Initially hidden */
+}
+
+#movieSuggestions div {
+    padding: 10px;
+    cursor: pointer;
+    background-color: rgba(25, 25, 35, 0.9); /* Default background */
+    color: #fff;
+}
+
+#movieSuggestions div:hover {
+    background-color: #007bff; /* Highlight on hover */
+    color: #fff; /* Text remains white on hover */
+}
+
+
+
+/*game suggestions dropdown*/
 #gameSuggestions {
     border: 1px solid #ccc;
     max-height: 200px; /* Limit to five items (adjust as needed based on item height) */
