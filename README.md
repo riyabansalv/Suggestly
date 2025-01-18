@@ -1,1 +1,3 @@
-# Music-Recommendation
+# Suggestly
+
+Suggestly suggests anything!
