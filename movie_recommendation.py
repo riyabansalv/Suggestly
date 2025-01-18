@@ -1,5 +1,9 @@
 import pickle
 import requests
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class MovieRecommender:
     def __init__(self, movies_path, similarity_path):
