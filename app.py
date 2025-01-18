@@ -8,34 +8,48 @@ import pandas as pd
 
 app = Flask(__name__)
 
-# Initialize both recommenders
-music_recommender = MusicRecommender("ex.csv")
+# Initialize the recommenders
+music_recommender = MusicRecommender("music_list.pkl", "similarity.pkl")
 book_recommender = BookRecommender()
 movie_recommender = MovieRecommender("movies_list.pkl", "similarity.pkl")
 game_recommender = GameRecommender("game_data.pkl","games_similarity.pkl")
 
-music_df = pd.read_csv('ex.csv')
+# Load the music dataframe globally
+music_df = pd.read_pickle("music_list.pkl")
 
 
 @app.route("/")
 def home():
-    return render_template("try.html")  # Render the new intro page
+    return render_template("index.html")  # Render the new intro page
 
-# Music Recommendation Route with Poster URLs
+# Music Recommendation Route
 @app.route("/recommend_music", methods=["POST"])
 def recommend_music():
     data = request.json
-    music_title = data.get("music_title", "")
+    music_title = data.get("music_title", "").strip()
+    if not music_title:
+        return jsonify({"recommendations": []})
+    
     recommendations = music_recommender.recommend(music_title)
+    return jsonify({"recommendations": [{"title": rec.title()} for rec in recommendations]})
 
-    # You can add poster URLs here if available for the music recommendations
-    enhanced_recommendations = []
-    for song in recommendations:
-        # Replace the following with your actual logic for music poster URLs
-        poster_url = fetch_music_poster(song)  # Assuming a function to get music poster URL
-        enhanced_recommendations.append({"title": song, "poster_url": poster_url})
+@app.route("/get_titles", methods=["GET"])
+def get_titles():
+    query = request.args.get("q", "").lower().strip()
+    if not query:
+        return jsonify({"titles": []})
 
-    return jsonify({"recommendations": enhanced_recommendations})
+    try:
+        matching_titles = (
+            music_df[music_df['title'].str.lower().str.contains(query, case=False, na=False)]['title']
+            .head(10)
+            .str.title()
+            .tolist()
+        )
+
+        return jsonify({"titles": matching_titles})
+    except KeyError:
+        return jsonify({"titles": []})
 
 # Book Recommendation Route with Poster URLs
 @app.route("/recommend_book", methods=["POST"])
