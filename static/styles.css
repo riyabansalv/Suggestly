@@ -61,10 +61,10 @@ button:hover {
 }
 
 #suggestions {
-    border: none; /* Removes any border */
-    background-color: rgba(25, 25, 35, 0.9); /* Ensures consistent background */
-    border-radius: 8px; /* Optional: Adds rounded corners for a sleek look */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional: Adds a subtle shadow */
+    border: none; 
+    background-color: rgba(25, 25, 35, 0.9); 
+    border-radius: 8px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 #suggestions div {
